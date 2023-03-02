@@ -75,9 +75,13 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach((value, i) => {
+
+  //Implementing sort method
+  const moveSort = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  moveSort.forEach((value, i) => {
     //ternary operator
     const type = value > 0 ? 'deposit' : 'withdrawal';
     const html = `
@@ -177,7 +181,8 @@ btnTransfer.addEventListener('click', function (event) {
   const transferAccount = accounts.find(
     acc => acc.username === inputTransferTo.value
   );
-  console.log(amountToTransfer, transferAccount);
+
+  inputTransferAmount.value = inputTransferTo.value = '';
 
   if (
     amountToTransfer > 0 &&
@@ -191,6 +196,58 @@ btnTransfer.addEventListener('click', function (event) {
     //update ui
     updateUI(currentAccount);
   }
+});
+
+//Implementing Loan Request using some and every method
+btnLoan.addEventListener('click', event => {
+  event.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  //Checking if the requested loan is 10% deposit loan
+  if (amount > 0 && currentAccount.movements.some(mov => mov <= amount * 0.1)) {
+    //Add amount to the user
+    currentAccount.movements.push(amount);
+
+    //update UI
+    updateUI(currentAccount);
+  }
+
+  //Clear input fields
+  inputLoanAmount.value = '';
+});
+
+//Deleiting account using findIndex method in array
+
+btnClose.addEventListener('click', event => {
+  event.preventDefault();
+
+  //Checking Credentials
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+
+    //Delete account
+    accounts.splice(index, 1);
+
+    //Hide UI
+    containerApp.style.opacity = 0;
+  }
+  //Clearing inputs
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
+//Sorting button
+let sortedState = false;
+btnSort.addEventListener('click', event => {
+  event.preventDefault();
+  displayMovements(currentAccount.movements, !sortedState);
+  sortedState = !sortedState;
 });
 
 //Calculating balance and displaying it on Bankist app using reduce function
