@@ -1,6 +1,8 @@
 
 ## Live Demo
 https://thebanker.netlify.app/
+### User and Pin for Demo
+User: js pin: 1111
 # The Bankist Website
 
 A simple javaScript Website to utilize the functionalities of array methods in real life situations.
